@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hybrid Security App</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --background-color: #eef2ff;
+            --card-color: #ffffff;
+            --text-color: #1f2937;
+            --subtle-text: #6b7280;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            transition: background-color 0.3s;
+        }
+        .container-card {
+            background-color: var(--card-color);
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .container-card:hover {
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
+            transform: translateY(-8px);
+        }
+        .tab-button {
+            border-radius: 9999px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 500;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: var(--card-color);
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transform: scale(1.05);
+        }
+        .tab-button:not(.active):hover {
+            background-color: #e0e7ff;
+            color: var(--primary-dark);
+        }
+        .section-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+        .section-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.75rem;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+        }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .btn-primary:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+        .progress-bar {
+            height: 12px;
+            border-radius: 9999px;
+            background-color: #e5e7eb;
+            overflow: hidden;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-image: linear-gradient(to right, #6366f1, #818cf8);
+            transition: width 0.5s ease-in-out;
+            border-radius: 9999px;
+        }
+        .chat-message {
+            max-width: 75%;
+            padding: 0.75rem 1.25rem;
+            border-radius: 1.5rem;
+            margin-bottom: 0.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .chat-message.sender {
+            background-color: #d1d5db;
+            color: #1f2937;
+            align-self: flex-end;
+            border-bottom-right-radius: 0.5rem;
+        }
+        .chat-message.receiver {
+            background-color: #eff6ff;
+            color: #1f2937;
+            align-self: flex-start;
+            border-bottom-left-radius: 0.5rem;
+        }
+        .loader {
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid var(--primary-color);
+          border-radius: 50%;
+          width: 30px;
+          height: 30px;
+          animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="container-card w-full max-w-2xl p-6 md:p-10">
+        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 md:mb-8">Hybrid Security App</h1>
+
+        <!-- Tab Navigation -->
+        <div class="flex justify-center items-center space-x-2 md:space-x-4 mb-8">
+            <button id="apk-scan-tab" class="tab-button active">
+                <i class="fas fa-search-plus mr-2"></i> APK Scan
+            </button>
+            <button id="quantum-chat-tab" class="tab-button">
+                <i class="fas fa-lock mr-2"></i> Quantum Chat
+            </button>
+            <button id="file-share-tab" class="tab-button">
+                <i class="fas fa-share-alt mr-2"></i> File Share
+            </button>
+        </div>
+
+        <!-- App Sections -->
+        <div id="apk-scan-section" class="section-content active">
+            <div class="space-y-6">
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold text-gray-700">Scan for Malicious APKs</h2>
+                    <p class="text-sm text-gray-500 mt-1">Upload a file to check for security risks.</p>
+                </div>
+                <div class="flex flex-col items-center space-y-4">
+                    <input type="file" id="apk-file-input" accept=".apk" class="form-input" />
+                    <button id="scan-button" class="btn-primary w-full md:w-auto flex items-center justify-center">
+                        <i class="fas fa-fingerprint mr-2"></i> Run Scan
+                    </button>
+                </div>
+                <div id="scan-progress-container" class="hidden">
+                    <p id="scan-status" class="text-center text-gray-600 mb-2">Scanning...</p>
+                    <div class="progress-bar">
+                        <div id="scan-progress-fill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div id="scan-result" class="hidden p-6 rounded-2xl bg-gray-50 border border-gray-200">
+                    <h3 class="text-xl font-semibold mb-3">Scan Report</h3>
+                    <pre id="scan-report-content" class="whitespace-pre-wrap text-sm text-gray-700"></pre>
+                    <div class="flex justify-end mt-4">
+                        <button id="explain-report-btn" class="btn-primary px-4 py-2 text-sm flex items-center">
+                            <i class="fas fa-magic mr-2"></i> Explain Report ✨
+                        </button>
+                    </div>
+                    <div id="explain-report-loader" class="hidden justify-center mt-4">
+                        <div class="loader"></div>
+                    </div>
+                    <div id="explained-report-content" class="mt-4 p-4 bg-white rounded-xl border border-gray-200 hidden">
+                        <h4 class="text-lg font-semibold mb-2">Simplified Explanation</h4>
+                        <p id="explained-report-text" class="text-sm text-gray-700"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="quantum-chat-section" class="section-content">
+            <div class="space-y-6 flex flex-col h-[60vh]">
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold text-gray-700">Quantum-Safe Chat</h2>
+                    <p class="text-sm text-gray-500 mt-1">Secure your messages with PQC simulation.</p>
+                </div>
+                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 rounded-xl bg-gray-50 border border-gray-200 flex flex-col space-y-2">
+                    <!-- Chat messages will be appended here -->
+                </div>
+                <div class="flex space-x-3 items-center">
+                    <input type="text" id="chat-input" placeholder="Type a message..." class="form-input flex-1" />
+                    <button id="draft-reply-btn" class="btn-primary px-4 py-3 rounded-xl flex-shrink-0">
+                        <i class="fas fa-pen mr-1"></i> Draft ✨
+                    </button>
+                    <button id="send-button" class="btn-primary px-5 py-3 rounded-xl flex-shrink-0">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div id="draft-reply-loader" class="hidden justify-center mt-4">
+                    <div class="loader"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="file-share-section" class="section-content">
+            <div class="space-y-6">
+                <div class="text-center">
+                    <h2 class="text-2xl font-semibold text-gray-700">Secure File Sharing</h2>
+                    <p class="text-sm text-gray-500 mt-1">Share files with a unique, secure link.</p>
+                </div>
+                <div class="flex flex-col items-center space-y-4">
+                    <input type="file" id="file-share-input" class="form-input" />
+                    <button id="generate-link-button" class="btn-primary w-full md:w-auto flex items-center justify-center">
+                        <i class="fas fa-link mr-2"></i> Generate Share Link
+                    </button>
+                </div>
+                <div id="link-result" class="hidden p-6 rounded-2xl bg-gray-50 border border-gray-200">
+                    <p class="text-sm text-gray-500 mb-2">Share this link:</p>
+                    <div class="flex items-center space-x-2">
+                        <input type="text" id="share-link-output" class="form-input flex-1 bg-white" readonly />
+                        <button id="copy-link-button" class="btn-primary px-3 py-2 rounded-lg">
+                            <i class="fas fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom modal for alerts -->
+        <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
+            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full space-y-4">
+                <h3 id="modal-title" class="text-lg font-bold text-gray-800"></h3>
+                <p id="modal-message" class="text-sm text-gray-600"></p>
+                <button id="modal-ok-button" class="btn-primary w-full">OK</button>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="module">
+
+        const activeTab = 'active';
+        const hiddenClass = 'hidden';
+
+        const tabs = {
+            apkScan: document.getElementById('apk-scan-tab'),
+            quantumChat: document.getElementById('quantum-chat-tab'),
+            fileShare: document.getElementById('file-share-tab')
+        };
+        const sections = {
+            apkScan: document.getElementById('apk-scan-section'),
+            quantumChat: document.getElementById('quantum-chat-section'),
+            fileShare: document.getElementById('file-share-section')
+        };
+
+        // Custom modal for alerts and confirmations
+        function showModal(title, message) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+        document.getElementById('modal-ok-button').addEventListener('click', () => {
+            document.getElementById('custom-modal').classList.add('hidden');
+        });
+
+        function switchSection(sectionName) {
+            for (const tabName in tabs) {
+                if (tabName === sectionName) {
+                    tabs[tabName].classList.add(activeTab);
+                } else {
+                    tabs[tabName].classList.remove(activeTab);
+                }
+            }
+            for (const secName in sections) {
+                if (secName === sectionName) {
+                    sections[secName].classList.add(activeTab);
+                } else {
+                    sections[secName].classList.remove(activeTab);
+                }
+            }
+        }
+
+        // APK Scanner Logic
+        const apkFileInput = document.getElementById('apk-file-input');
+        const scanButton = document.getElementById('scan-button');
+        const scanProgressContainer = document.getElementById('scan-progress-container');
+        const scanProgressFill = document.getElementById('scan-progress-fill');
+        const scanResult = document.getElementById('scan-result');
+        const scanReportContent = document.getElementById('scan-report-content');
+        const scanStatus = document.getElementById('scan-status');
+
+        async function runApkScan() {
+            if (!apkFileInput.files[0]) {
+                showModal('Error', 'Please select an APK file to scan.');
+                return;
+            }
+
+            scanButton.disabled = true;
+            scanResult.classList.add(hiddenClass);
+            scanProgressContainer.classList.remove(hiddenClass);
+            scanStatus.innerText = 'Scanning...';
+            scanProgressFill.style.width = '0%';
+
+            const file = apkFileInput.files[0];
+            const formData = new FormData();
+            formData.append('apkFile', file);
+
+            try {
+                // Simulating progress with a loop
+                for (let i = 0; i <= 100; i += 10) {
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    scanProgressFill.style.width = `${i}%`;
+                }
+                
+                // Call the backend API
+                const response = await fetch('http://localhost:3000/api/analyze-apk', {
+    method: 'POST',
+    body: formData
+});
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Server error.');
+                }
+
+                const report = await response.json();
+                scanReportContent.textContent = JSON.stringify(report, null, 2);
+                scanStatus.innerText = 'Scan Complete!';
+                scanResult.classList.remove(hiddenClass);
+            } catch (error) {
+                console.error("Error during APK scan:", error);
+                scanStatus.innerText = 'Scan Failed!';
+                showModal('Scan Failed', `Could not connect to the analysis server. Error: ${error.message}`);
+            } finally {
+                scanButton.disabled = false;
+            }
+        }
+
+        // --- Gemini API Integration for APK Scan Report Explanation ---
+        const explainReportBtn = document.getElementById('explain-report-btn');
+        const explainedReportContainer = document.getElementById('explained-report-content');
+        const explainedReportText = document.getElementById('explained-report-text');
+        const explainReportLoader = document.getElementById('explain-report-loader');
+
+        async function explainReport() {
+            const reportText = scanReportContent.textContent;
+            if (!reportText) {
+                showModal('Error', 'No scan report to explain.');
+                return;
+            }
+
+            explainedReportContainer.classList.add(hiddenClass);
+            explainReportLoader.classList.remove(hiddenClass);
+            explainReportBtn.disabled = true;
+
+            const userPrompt = `I have the following JSON scan report. Please provide a simplified, non-technical summary of the findings in a single paragraph. Do not include technical terms or jargon. The report is: ${reportText}`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: "Act as a cybersecurity expert explaining a security report to a non-technical user. Be friendly, reassuring, and easy to understand." }]
+                }
+            };
+            
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const explanation = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                explainedReportText.innerText = explanation || "Could not generate an explanation.";
+                explainedReportContainer.classList.remove(hiddenClass);
+            } catch (error) {
+                console.error("Error explaining report:", error);
+                showModal('Error', `Failed to get explanation from Gemini API: ${error.message}`);
+            } finally {
+                explainReportLoader.classList.add(hiddenClass);
+                explainReportBtn.disabled = false;
+            }
+        }
+
+        // Quantum Chat Logic
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const chatMessages = document.getElementById('chat-messages');
+        const draftReplyBtn = document.getElementById('draft-reply-btn');
+        const draftReplyLoader = document.getElementById('draft-reply-loader');
+        
+        let chatHistory = [];
+
+        function renderChatMessages() {
+            chatMessages.innerHTML = '';
+            chatHistory.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.className = `chat-message ${msg.sender === 'user' ? 'sender' : 'receiver'}`;
+                messageElement.innerText = msg.text;
+                chatMessages.appendChild(messageElement);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        sendButton.addEventListener('click', () => {
+            const text = chatInput.value.trim();
+            if (text === '') return;
+            
+            chatHistory.push({ sender: 'user', text: text });
+            renderChatMessages();
+            chatInput.value = '';
+        });
+        
+        // --- Gemini API Integration for Chat Reply Drafting ---
+        async function draftReply() {
+            const lastMessage = chatHistory.length > 0 ? chatHistory[chatHistory.length - 1].text : '';
+            if (!lastMessage) {
+                showModal('Error', 'No messages to reply to.');
+                return;
+            }
+
+            draftReplyBtn.disabled = true;
+            draftReplyLoader.classList.remove(hiddenClass);
+
+            const userPrompt = `Based on the last message in this conversation: "${lastMessage}", please draft a conversational reply. The reply should be friendly and helpful.`;
+            
+            const payload = {
+                contents: [{ parts: [{ text: userPrompt }] }],
+                tools: [{ "google_search": {} }],
+                systemInstruction: {
+                    parts: [{ text: "Act as a helpful chatbot assisting with a reply. Provide a single, concise response." }]
+                }
+            };
+            
+            const apiKey = "";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.statusText}`);
+                }
+
+                const result = await response.json();
+                const reply = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+                chatInput.value = reply || "Could not draft a reply.";
+            } catch (error) {
+                console.error("Error drafting reply:", error);
+                showModal('Error', `Failed to draft reply from Gemini API: ${error.message}`);
+            } finally {
+                draftReplyLoader.classList.add(hiddenClass);
+                draftReplyBtn.disabled = false;
+            }
+        }
+        
+        // File Sharing Logic
+        const fileShareInput = document.getElementById('file-share-input');
+        const generateLinkButton = document.getElementById('generate-link-button');
+        const linkResult = document.getElementById('link-result');
+        const shareLinkOutput = document.getElementById('share-link-output');
+        const copyLinkButton = document.getElementById('copy-link-button');
+
+        async function shareFile() {
+            const file = fileShareInput.files[0];
+            if (!file) {
+                showModal('Error', 'Please select a file to share.');
+                return;
+            }
+            
+            const fileUrl = URL.createObjectURL(file);
+            shareLinkOutput.value = fileUrl;
+            linkResult.classList.remove(hiddenClass);
+
+            showModal('Success!', 'Share link generated! This link will only work in this browser session. You can copy it and download the file from the URL bar.');
+        }
+
+        // Copy link to clipboard
+        copyLinkButton.addEventListener('click', () => {
+            shareLinkOutput.select();
+            document.execCommand('copy');
+            showModal('Copied!', 'The shareable link has been copied to your clipboard.');
+        });
+        
+        // Event Listeners for Tab Switching
+        tabs.apkScan.addEventListener('click', () => switchSection('apkScan'));
+        tabs.quantumChat.addEventListener('click', () => switchSection('quantumChat'));
+        tabs.fileShare.addEventListener('click', () => switchSection('fileShare'));
+
+        // Event listeners for feature actions
+        scanButton.addEventListener('click', runApkScan);
+        generateLinkButton.addEventListener('click', shareFile);
+        explainReportBtn.addEventListener('click', explainReport);
+        draftReplyBtn.addEventListener('click', draftReply);
+
+    </script>
+</body>
+</html>
