@@ -35,11 +35,11 @@ Our messaging system is built on **NIST-approved post-quantum cryptographic algo
 
 #### Technical Specifications:
 ```
-Encryption Algorithm: CRYSTALS-Kyber-1024
-Digital Signature: CRYSTALS-Dilithium-5
-Hash Function: SHA-3-512
-Key Exchange: SIKE (Supersingular Isogeny Key Encapsulation)
-Message Authentication: HMAC-SHA3-256
+Encryption Algorithm: AES-256-GCM (for data encryption after key exchange)
+Key Encapsulation (Key Exchange): CRYSTALS-Kyber-1024 (PQC KEM)
+Digital Signature: CRYSTALS-Dilithium-5 (PQC Signature)
+Hash Function: SHA3-512
+Message Authentication: HMAC-SHA3-256
 ```
 
 ### 📂 One-Time Secure File Sharing System
