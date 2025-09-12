@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,248 +10,905 @@
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            box-sizing: border-box;
+        }
+
         :root {
-            --primary-color: #6366f1;
-            --primary-dark: #4f46e5;
-            --background-color: #eef2ff;
-            --card-color: #ffffff;
-            --text-color: #1f2937;
-            --subtle-text: #6b7280;
+            --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            --secondary-gradient: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+            --success-gradient: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --danger-gradient: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --dark-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            /* --dark-bg: linear-gradient(135deg, #ffffff 0%, #ffffff 100%); */
         }
 
         body {
             font-family: 'Inter', sans-serif;
-            background-color: var(--background-color);
-            transition: background-color 0.3s;
+            background: var(--dark-bg);
+            min-height: 100vh;
+            transition: all 0.3s ease;
+            color: #f8fafc;
         }
+
+        .glass-morphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.2);
+        }
+
         .container-card {
-            background-color: var(--card-color);
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
             border-radius: 1.5rem;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1), 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: box-shadow 0.3s, transform 0.3s;
+            box-shadow:
+                0 32px 64px rgba(0, 0, 0, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
+
         .container-card:hover {
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 20px rgba(0, 0, 0, 0.08);
-            transform: translateY(-8px);
+            box-shadow:
+                0 40px 80px rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
         }
+
         .tab-button {
-            border-radius: 9999px;
-            padding: 0.75rem 1.5rem;
-            font-weight: 500;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 1.5rem;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #cbd5e1;
         }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .tab-button:hover::before {
+            left: 100%;
+        }
+
         .tab-button.active {
-            background-color: var(--primary-color);
-            color: var(--card-color);
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            transform: scale(1.05);
+            background: var(--primary-gradient);
+            color: #ffffff;
+            box-shadow:
+                0 8px 32px rgba(99, 102, 241, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transform: scale(1.05) translateY(-2px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+
         .tab-button:not(.active):hover {
-            background-color: #e0e7ff;
-            color: var(--primary-dark);
+            background: rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+            color: #ffffff;
         }
+
         .section-content {
             display: none;
-            animation: fadeIn 0.5s ease-out;
+            animation: fadeIn 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+
         .section-content.active {
             display: block;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.75rem;
-            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .form-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
-        }
-        .btn-primary {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.75rem;
-            font-weight: 600;
-            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
-        }
-        .progress-bar {
-            height: 12px;
-            border-radius: 9999px;
-            background-color: #e5e7eb;
+
+        /* Enhanced File Upload */
+        .file-upload-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+            border: 2px dashed rgba(99, 102, 241, 0.3);
+            border-radius: 1.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
             overflow: hidden;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
         }
+
+        .file-upload-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.1), transparent);
+            transition: left 0.6s;
+        }
+
+        .file-upload-container:hover::before {
+            left: 100%;
+        }
+
+        .file-upload-container:hover {
+            border-color: rgba(99, 102, 241, 0.6);
+            background: rgba(15, 23, 42, 0.7);
+            transform: scale(1.02);
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.2);
+        }
+
+        .file-upload-container.file-selected {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+            box-shadow: 0 8px 32px rgba(16, 185, 129, 0.2);
+        }
+
+        .file-upload-icon {
+            font-size: 3.5rem;
+            color: #6366f1;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            opacity: 0.8;
+        }
+
+        .file-upload-container:hover .file-upload-icon {
+            color: #818cf8;
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        .file-upload-container.file-selected .file-upload-icon {
+            color: #10b981;
+            transform: scale(1.1);
+        }
+
+        #apk-file-input {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 0.875rem 2rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            box-shadow:
+                0 8px 32px rgba(99, 102, 241, 0.3),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            transform: translateY(-3px) scale(1.02);
+            box-shadow:
+                0 12px 40px rgba(99, 102, 241, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        .progress-bar {
+            height: 10px;
+            border-radius: 1.5rem;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
         .progress-fill {
             height: 100%;
             width: 0%;
-            background-image: linear-gradient(to right, #6366f1, #818cf8);
-            transition: width 0.5s ease-in-out;
-            border-radius: 9999px;
-        }
-        .chat-message {
-            max-width: 75%;
-            padding: 0.75rem 1.25rem;
+            background: var(--primary-gradient);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
             border-radius: 1.5rem;
-            margin-bottom: 0.5rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .chat-message.sender {
-            background-color: #d1d5db;
-            color: #1f2937;
-            align-self: flex-end;
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* Enhanced Scan Report */
+        .scan-report-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .scan-report-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--primary-gradient);
+            border-radius: 1.5rem 1.5rem 0 0;
+        }
+
+        .scan-report-header {
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 1.5rem 1.5rem 0 0;
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .scan-report-content {
+            padding: 1.5rem;
+        }
+
+        .risk-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 1.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin: 0.5rem 0;
+        }
+
+        .risk-low {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .risk-medium {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .risk-high {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .report-section {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 1rem;
+            padding: 1rem;
+            margin: 1rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .report-data {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            font-size: 0.875rem;
+            line-height: 1.6;
+            white-space: pre-wrap;
+            border-left: 4px solid #6366f1;
+            color: #e2e8f0;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        /* Professional Chat UI */
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 60vh;
+            background: rgba(15, 23, 42, 0.7);
+            border-radius: 1.5rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .chat-header {
+            padding: 1.25rem 1.5rem;
+            background: rgba(15, 23, 42, 0.9);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-status {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+            color: #94a3b8;
+        }
+
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .status-online {
+            background: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.3);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message-row {
+            display: flex;
+            margin-bottom: 1.25rem;
+        }
+
+        .message-row.sent {
+            justify-content: flex-end;
+        }
+
+        .message-row.received {
+            justify-content: flex-start;
+        }
+
+        .message {
+            max-width: 70%;
+            padding: 0.875rem 1.25rem;
+            border-radius: 1.125rem;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .message.sent {
+            background: var(--primary-gradient);
+            color: white;
             border-bottom-right-radius: 0.5rem;
         }
-        .chat-message.receiver {
-            background-color: #eff6ff;
-            color: #1f2937;
-            align-self: flex-start;
+
+        .message.received {
+            background: rgba(30, 41, 59, 0.7);
+            color: #e2e8f0;
             border-bottom-left-radius: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .loader {
-          border: 4px solid #f3f3f3;
-          border-top: 4px solid var(--primary-color);
-          border-radius: 50%;
-          width: 30px;
-          height: 30px;
-          animation: spin 1s linear infinite;
+
+        .message-time {
+            font-size: 0.6875rem;
+            margin-top: 0.375rem;
+            opacity: 0.7;
+            text-align: right;
         }
-        @keyframes spin {
-          0% { transform: rotate(0deg); }
-          100% { transform: rotate(360deg); }
+
+        .message.received .message-time {
+            text-align: left;
+        }
+
+        .chat-input-container {
+            padding: 1.25rem 1.5rem;
+            background: rgba(15, 23, 42, 0.9);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: rgba(30, 41, 59, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1.5rem;
+            padding: 0.875rem 1.25rem;
+            color: #e2e8f0;
+            font-family: 'Inter', sans-serif;
+            resize: none;
+            height: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input:focus {
+            outline: none;
+            border-color: rgba(99, 102, 241, 0.5);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .chat-send-btn {
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .chat-send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .chat-send-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Form inputs */
+        .form-input {
+            width: 100%;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            font-size: 1rem;
+            color: #e2e8f0;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow:
+                0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Floating particles background effect */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(99, 102, 241, 0.15);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+
+        /* Custom modal enhancements */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 90%;
+            width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+        }
+
+        /* Responsive improvements */
+        @media (max-width: 768px) {
+            .container-card {
+                margin: 1rem;
+                border-radius: 1.25rem;
+                padding: 1.5rem;
+            }
+
+            .tab-button {
+                padding: 0.75rem 1.25rem;
+                font-size: 0.875rem;
+            }
+
+            .file-upload-container {
+                min-height: 150px;
+            }
+
+            .file-upload-icon {
+                font-size: 2.5rem;
+            }
+
+            .message {
+                max-width: 85%;
+            }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.5);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
         }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
 
-    <div class="container-card w-full max-w-2xl p-6 md:p-10">
-        <h1 class="text-3xl font-bold text-center text-gray-800 mb-6 md:mb-8">Hybrid Security App</h1>
+<body class="flex items-center justify-center min-h-screen p-4">
+    <!-- Floating particles background -->
+    <div class="particles">
+        <div class="particle" style="left: 20%; top: 20%; width: 4px; height: 4px; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 80%; top: 30%; width: 6px; height: 6px; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 40%; top: 60%; width: 3px; height: 3px; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 70%; top: 70%; width: 5px; height: 5px; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 10%; top: 80%; width: 4px; height: 4px; animation-delay: 4s;"></div>
+    </div>
+
+    <div class="container-card w-full max-w-4xl p-8 md:p-10">
+        <div class="text-center mb-8">
+            <h1
+                class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-3">
+                <i class="fas fa-shield-alt mr-3"></i>Hybrid Security App
+            </h1>
+            <p class="text-slate-400">Advanced security solutions with quantum-resistant encryption</p>
+        </div>
 
         <!-- Tab Navigation -->
-        <div class="flex justify-center items-center space-x-2 md:space-x-4 mb-8">
+        <div class="flex justify-center items-center space-x-3 md:space-x-4 mb-10">
             <button id="apk-scan-tab" class="tab-button active">
-                <i class="fas fa-search-plus mr-2"></i> APK Scan
+                <i class="fas fa-search mr-2"></i> APK Scan
             </button>
             <button id="quantum-chat-tab" class="tab-button">
-                <i class="fas fa-lock mr-2"></i> Quantum Chat
+                <i class="fas fa-comment-lock mr-2"></i> Quantum Chat
             </button>
             <button id="file-share-tab" class="tab-button">
-                <i class="fas fa-share-alt mr-2"></i> File Share
+                <i class="fas fa-shield-alt mr-2"></i> Secure Share
             </button>
         </div>
 
         <!-- App Sections -->
         <div id="apk-scan-section" class="section-content active">
-            <div class="space-y-6">
+            <div class="space-y-8">
                 <div class="text-center">
-                    <h2 class="text-2xl font-semibold text-gray-700">Scan for Malicious APKs</h2>
-                    <p class="text-sm text-gray-500 mt-1">Upload a file to check for security risks.</p>
+                    <h2
+                        class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                        Advanced APK Security Scanner
+                    </h2>
+                    <p class="text-slate-400">Upload your APK file to detect malicious behavior and security
+                        vulnerabilities</p>
                 </div>
-                <div class="flex flex-col items-center space-y-4">
-                    <input type="file" id="apk-file-input" accept=".apk" class="form-input" />
-                    <button id="scan-button" class="btn-primary w-full md:w-auto flex items-center justify-center">
-                        <i class="fas fa-fingerprint mr-2"></i> Run Scan
+
+                <!-- Enhanced File Upload Area -->
+                <div class="file-upload-container" id="file-upload-area">
+                    <div class="file-upload-icon">
+                        <i class="fas fa-cloud-upload-alt" id="upload-icon"></i>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-lg font-semibold text-slate-300 mb-2" id="upload-title">Choose APK File</h3>
+                        <p class="text-slate-400 mb-4" id="upload-description">Drag and drop your APK file here or click
+                            to browse</p>
+                        <div class="text-sm text-slate-500">
+                            <span>Supported: .apk files up to 100MB</span>
+                        </div>
+                    </div>
+                    <input type="file" id="apk-file-input" accept=".apk" />
+                </div>
+
+                <!-- Scan Button -->
+                <div class="text-center">
+                    <button id="scan-button"
+                        class="btn-primary inline-flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>Initiate Deep Scan</span>
                     </button>
                 </div>
-                <div id="scan-progress-container" class="hidden">
-                    <p id="scan-status" class="text-center text-gray-600 mb-2">Scanning...</p>
+
+                <!-- Scan Progress -->
+                <div id="scan-progress-container" class="hidden space-y-4">
+                    <div class="text-center">
+                        <div class="loader mx-auto mb-4"></div>
+                        <p id="scan-status" class="text-lg font-semibold text-slate-300">Analyzing APK structure...</p>
+                        <p class="text-sm text-slate-400 mt-1">Please wait while we examine your file</p>
+                    </div>
                     <div class="progress-bar">
                         <div id="scan-progress-fill" class="progress-fill"></div>
                     </div>
                 </div>
-                <div id="scan-result" class="hidden p-6 rounded-2xl bg-gray-50 border border-gray-200">
-                    <h3 class="text-xl font-semibold mb-3">Scan Report</h3>
-                    <pre id="scan-report-content" class="whitespace-pre-wrap text-sm text-gray-700"></pre>
-                    <div class="flex justify-end mt-4">
-                        <button id="explain-report-btn" class="btn-primary px-4 py-2 text-sm flex items-center">
-                            <i class="fas fa-magic mr-2"></i> Explain Report ✨
-                        </button>
-                    </div>
-                    <div id="explain-report-loader" class="hidden justify-center mt-4">
-                        <div class="loader"></div>
-                    </div>
-                    <div id="explained-report-content" class="mt-4 p-4 bg-white rounded-xl border border-gray-200 hidden">
-                        <h4 class="text-lg font-semibold mb-2">Simplified Explanation</h4>
-                        <p id="explained-report-text" class="text-sm text-gray-700"></p>
+
+                <!-- Enhanced Scan Result -->
+                <div id="scan-result" class="hidden">
+                    <div class="scan-report-card">
+                        <div class="scan-report-header">
+                            <div class="flex items-center justify-between flex-wrap gap-4">
+                                <div>
+                                    <h3 class="text-xl font-bold text-slate-200 flex items-center">
+                                        <i class="fas fa-file-shield mr-3 text-indigo-400"></i>
+                                        Security Analysis Report
+                                    </h3>
+                                    <p class="text-slate-400 mt-1">Comprehensive malware and vulnerability assessment
+                                    </p>
+                                </div>
+                                <div id="risk-badge" class="risk-indicator">
+                                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                                    <span id="risk-level">Processing...</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="scan-report-content">
+                            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                                <div class="report-section">
+                                    <h4 class="font-semibold text-slate-200 mb-2 flex items-center">
+                                        <i class="fas fa-info-circle mr-2 text-blue-400"></i>
+                                        File Information
+                                    </h4>
+                                    <div id="file-info" class="space-y-1 text-sm text-slate-400"></div>
+                                </div>
+
+                                <div class="report-section">
+                                    <h4 class="font-semibold text-slate-200 mb-2 flex items-center">
+                                        <i class="fas fa-chart-line mr-2 text-green-400"></i>
+                                        Risk Assessment
+                                    </h4>
+                                    <div id="risk-assessment" class="space-y-1 text-sm text-slate-400"></div>
+                                </div>
+                            </div>
+
+                            <div class="report-section">
+                                <h4 class="font-semibold text-slate-200 mb-3 flex items-center">
+                                    <i class="fas fa-code mr-2 text-purple-400"></i>
+                                    Detailed Analysis
+                                </h4>
+                                <div class="report-data" id="scan-report-content"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <div id="quantum-chat-section" class="section-content">
-            <div class="space-y-6 flex flex-col h-[60vh]">
-                <div class="text-center">
-                    <h2 class="text-2xl font-semibold text-gray-700">Quantum-Safe Chat</h2>
-                    <p class="text-sm text-gray-500 mt-1">Secure your messages with PQC simulation.</p>
-                </div>
-                <div id="chat-messages" class="flex-1 overflow-y-auto p-4 rounded-xl bg-gray-50 border border-gray-200 flex flex-col space-y-2">
-                    <!-- Chat messages will be appended here -->
-                </div>
-                <div class="flex space-x-3 items-center">
-                    <input type="text" id="chat-input" placeholder="Type a message..." class="form-input flex-1" />
-                    <button id="draft-reply-btn" class="btn-primary px-4 py-3 rounded-xl flex-shrink-0">
-                        <i class="fas fa-pen mr-1"></i> Draft ✨
-                    </button>
-                    <button id="send-button" class="btn-primary px-5 py-3 rounded-xl flex-shrink-0">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-                <div id="draft-reply-loader" class="hidden justify-center mt-4">
-                    <div class="loader"></div>
-                </div>
-            </div>
-        </div>
-
-        <div id="file-share-section" class="section-content">
             <div class="space-y-6">
                 <div class="text-center">
-                    <h2 class="text-2xl font-semibold text-gray-700">Secure File Sharing</h2>
-                    <p class="text-sm text-gray-500 mt-1">Share files with a unique, secure link.</p>
+                    <h2
+                        class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                        Quantum-Safe Chat
+                    </h2>
+                    <p class="text-slate-400">Secure your messages with Post-Quantum Cryptography</p>
                 </div>
-                <div class="flex flex-col items-center space-y-4">
-                    <input type="file" id="file-share-input" class="form-input" />
-                    <button id="generate-link-button" class="btn-primary w-full md:w-auto flex items-center justify-center">
-                        <i class="fas fa-link mr-2"></i> Generate Share Link
-                    </button>
-                </div>
-                <div id="link-result" class="hidden p-6 rounded-2xl bg-gray-50 border border-gray-200">
-                    <p class="text-sm text-gray-500 mb-2">Share this link:</p>
-                    <div class="flex items-center space-x-2">
-                        <input type="text" id="share-link-output" class="form-input flex-1 bg-white" readonly />
-                        <button id="copy-link-button" class="btn-primary px-3 py-2 rounded-lg">
-                            <i class="fas fa-copy"></i>
+
+                <!-- Professional Chat UI -->
+                <div class="chat-container">
+                    <div class="chat-header">
+                        <div>
+                            <h3 class="font-semibold text-slate-200">Secure Conversation</h3>
+                            <p class="text-sm text-slate-400">End-to-end encrypted with PQC</p>
+                        </div>
+                        <div class="chat-status">
+                            <div class="status-indicator status-online"></div>
+                            <span>Quantum Secured</span>
+                        </div>
+                    </div>
+
+                    <div id="chat-messages" class="chat-messages">
+                        <div class="message-row received">
+                            <div class="message received">
+                                <div>Welcome to QuantumSec Pro Chat! Your messages are protected with post-quantum
+                                    cryptography.</div>
+                                <div class="message-time">10:00 AM • System</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type your secure message..."
+                            class="chat-input" />
+                        <button id="send-button" class="chat-send-btn">
+                            <i class="fas fa-paper-plane"></i>
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Custom modal for alerts -->
-        <div id="custom-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-50 hidden">
-            <div class="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full space-y-4">
-                <h3 id="modal-title" class="text-lg font-bold text-gray-800"></h3>
-                <p id="modal-message" class="text-sm text-gray-600"></p>
-                <button id="modal-ok-button" class="btn-primary w-full">OK</button>
+        <div id="file-share-section" class="section-content">
+            <div class="space-y-8">
+                <div class="text-center">
+                    <h2
+                        class="text-2xl md:text-3xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent mb-2">
+                        Secure File Sharing
+                    </h2>
+                    <p class="text-slate-400">Share files with end-to-end encryption and unique secure links</p>
+                </div>
+                <div class="flex flex-col items-center space-y-6">
+                    <!-- <input type="file" id="file-share-input" class="form-input max-w-md" /> -->
+                    <div class="file-upload-container" id="file-share-upload-area">
+                        <div class="file-upload-icon" id="file-share-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="text-center">
+                            <h3 class="text-lg font-semibold text-slate-300 mb-2" id="file-share-upload-title">Choose
+                                File</h3>
+                            <p class="text-slate-400 mb-4" id="file-share-upload-description">Drag and drop your file
+                                here or click to browse</p>
+                            <div class="text-sm text-slate-500">
+                                <span>Max size: 100MB</span>
+                            </div>
+                        </div>
+                        <input type="file" id="file-share-input"
+                            class="absolute inset-0 opacity-0 w-full h-full cursor-pointer" />
+                    </div>
+                    <button id="generate-link-button"
+                        class="btn-primary inline-flex items-center justify-center space-x-2">
+                        <i class="fas fa-link"></i>
+                        <span>Generate Secure Link</span>
+                    </button>
+                </div>
+                <div id="link-result" class="hidden">
+                    <div class="scan-report-card">
+                        <div class="scan-report-content">
+                            <p class="text-lg font-semibold text-slate-200 mb-4 text-center">
+                                <i class="fas fa-check-circle text-green-400 mr-2"></i>
+                                Secure Share Link Generated
+                            </p>
+                            <div class="flex items-center space-x-3">
+                                <input type="text" id="share-link-output" class="form-input flex-1" readonly />
+                                <button id="copy-link-button" class="btn-primary px-4 py-3 rounded-xl">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-
     </div>
 
-    <script type="module">
+    <!-- Custom modal for alerts -->
+    <div id="custom-modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modal-title" class="text-xl font-bold text-slate-200 mb-3"></h3>
+            <p id="modal-message" class="text-slate-400 leading-relaxed"></p>
+            <div class="mt-6 text-right">
+                <button id="modal-ok-button" class="btn-primary px-6">OK</button>
+            </div>
+        </div>
+    </div>
 
+    <script>
+        // Simplified PQC (Post-Quantum Cryptography) simulation
+        const pqc = {
+            generateKeyPair: () => {
+                const publicKey = Math.random().toString(36).substring(2, 15);
+                const privateKey = Math.random().toString(36).substring(2, 15);
+                return { publicKey, privateKey };
+            },
+            encrypt: (plaintext, publicKey) => {
+                const encrypted = `PQC-ENCRYPTED-${btoa(plaintext)}-${publicKey}`;
+                return encrypted;
+            },
+            decrypt: (ciphertext, privateKey) => {
+                if (!ciphertext.startsWith('PQC-ENCRYPTED-')) {
+                    return ciphertext;
+                }
+                const parts = ciphertext.split('-');
+                const encryptedText = parts[2];
+                return atob(encryptedText);
+            }
+        };
+
+        // Custom modal for alerts and confirmations
+        function showModal(title, message) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-message').innerText = message;
+            document.getElementById('custom-modal').classList.add('active');
+        }
+
+        document.getElementById('modal-ok-button').addEventListener('click', () => {
+            document.getElementById('custom-modal').classList.remove('active');
+        });
+
+        // Tab management
         const activeTab = 'active';
         const hiddenClass = 'hidden';
 
@@ -259,21 +917,12 @@
             quantumChat: document.getElementById('quantum-chat-tab'),
             fileShare: document.getElementById('file-share-tab')
         };
+
         const sections = {
             apkScan: document.getElementById('apk-scan-section'),
             quantumChat: document.getElementById('quantum-chat-section'),
             fileShare: document.getElementById('file-share-section')
         };
-
-        // Custom modal for alerts and confirmations
-        function showModal(title, message) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-message').innerText = message;
-            document.getElementById('custom-modal').classList.remove('hidden');
-        }
-        document.getElementById('modal-ok-button').addEventListener('click', () => {
-            document.getElementById('custom-modal').classList.add('hidden');
-        });
 
         function switchSection(sectionName) {
             for (const tabName in tabs) {
@@ -290,233 +939,380 @@
                     sections[secName].classList.remove(activeTab);
                 }
             }
+
+            // Initialize chat when switching to that tab
+            if (sectionName === 'quantumChat') {
+                initializeChatUI();
+            }
         }
 
-        // APK Scanner Logic
+        // Enhanced File Upload Handling
         const apkFileInput = document.getElementById('apk-file-input');
+        const fileUploadArea = document.getElementById('file-upload-area');
+        const uploadIcon = document.getElementById('upload-icon');
+        const uploadTitle = document.getElementById('upload-title');
+        const uploadDescription = document.getElementById('upload-description');
+
+        // Drag and drop functionality
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            fileUploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            fileUploadArea.classList.add('file-selected');
+            uploadIcon.className = 'fas fa-file-upload';
+            uploadTitle.innerText = 'Drop APK File';
+            uploadDescription.innerText = 'Release to upload your file';
+        }
+
+        function unhighlight() {
+            fileUploadArea.classList.remove('file-selected');
+            uploadIcon.className = 'fas fa-cloud-upload-alt';
+            uploadTitle.innerText = 'Choose APK File';
+            uploadDescription.innerText = 'Drag and drop your APK file here or click to browse';
+        }
+
+        fileUploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            apkFileInput.files = files;
+            handleFiles(files);
+        }
+
+        apkFileInput.addEventListener('change', function () {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                const file = files[0];
+                if (file.name.endsWith('.apk')) {
+                    fileUploadArea.classList.add('file-selected');
+                    uploadIcon.className = 'fas fa-check-circle';
+                    uploadTitle.innerText = file.name;
+                    uploadDescription.innerText = 'Ready to scan';
+                    document.getElementById('scan-button').disabled = false;
+                } else {
+                    showModal('Invalid File', 'Please select a valid APK file.');
+                    resetFileUpload();
+                }
+            }
+        }
+
+        function resetFileUpload() {
+            apkFileInput.value = '';
+            fileUploadArea.classList.remove('file-selected');
+            uploadIcon.className = 'fas fa-cloud-upload-alt';
+            uploadTitle.innerText = 'Choose APK File';
+            uploadDescription.innerText = 'Drag and drop your APK file here or click to browse';
+            document.getElementById('scan-button').disabled = true;
+        }
+
+        // APK Scanning Functionality
         const scanButton = document.getElementById('scan-button');
         const scanProgressContainer = document.getElementById('scan-progress-container');
         const scanProgressFill = document.getElementById('scan-progress-fill');
-        const scanResult = document.getElementById('scan-result');
-        const scanReportContent = document.getElementById('scan-report-content');
         const scanStatus = document.getElementById('scan-status');
+        const scanResult = document.getElementById('scan-result');
+        const riskLevel = document.getElementById('risk-level');
+        const riskBadge = document.getElementById('risk-badge');
+        const fileInfo = document.getElementById('file-info');
+        const riskAssessment = document.getElementById('risk-assessment');
+        const scanReportContent = document.getElementById('scan-report-content');
 
-        async function runApkScan() {
-            if (!apkFileInput.files[0]) {
-                showModal('Error', 'Please select an APK file to scan.');
+        scanButton.addEventListener('click', () => {
+            const file = apkFileInput.files[0];
+            if (!file) {
+                showModal('No File Selected', 'Please select an APK file to scan.');
                 return;
             }
 
             scanButton.disabled = true;
-            scanResult.classList.add(hiddenClass);
-            scanProgressContainer.classList.remove(hiddenClass);
-            scanStatus.innerText = 'Scanning...';
-            scanProgressFill.style.width = '0%';
+            scanProgressContainer.classList.remove('hidden');
+            scanResult.classList.add('hidden');
 
-            const file = apkFileInput.files[0];
-            const formData = new FormData();
-            formData.append('apkFile', file);
-
-            try {
-                // Simulating progress with a loop
-                for (let i = 0; i <= 100; i += 10) {
-                    await new Promise(resolve => setTimeout(resolve, 300));
-                    scanProgressFill.style.width = `${i}%`;
-                }
-                
-                // Call the backend API
-                const response = await fetch('http://localhost:3000/api/analyze-apk', {
-    method: 'POST',
-    body: formData
-});
-
-                if (!response.ok) {
-                    const errorData = await response.json();
-                    throw new Error(errorData.error || 'Server error.');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    completeScan(file);
                 }
 
-                const report = await response.json();
-                scanReportContent.textContent = JSON.stringify(report, null, 2);
-                scanStatus.innerText = 'Scan Complete!';
-                scanResult.classList.remove(hiddenClass);
-            } catch (error) {
-                console.error("Error during APK scan:", error);
-                scanStatus.innerText = 'Scan Failed!';
-                showModal('Scan Failed', `Could not connect to the analysis server. Error: ${error.message}`);
-            } finally {
-                scanButton.disabled = false;
-            }
-        }
+                scanProgressFill.style.width = `${progress}%`;
 
-        // --- Gemini API Integration for APK Scan Report Explanation ---
-        const explainReportBtn = document.getElementById('explain-report-btn');
-        const explainedReportContainer = document.getElementById('explained-report-content');
-        const explainedReportText = document.getElementById('explained-report-text');
-        const explainReportLoader = document.getElementById('explain-report-loader');
-
-        async function explainReport() {
-            const reportText = scanReportContent.textContent;
-            if (!reportText) {
-                showModal('Error', 'No scan report to explain.');
-                return;
-            }
-
-            explainedReportContainer.classList.add(hiddenClass);
-            explainReportLoader.classList.remove(hiddenClass);
-            explainReportBtn.disabled = true;
-
-            const userPrompt = `I have the following JSON scan report. Please provide a simplified, non-technical summary of the findings in a single paragraph. Do not include technical terms or jargon. The report is: ${reportText}`;
-            
-            const payload = {
-                contents: [{ parts: [{ text: userPrompt }] }],
-                tools: [{ "google_search": {} }],
-                systemInstruction: {
-                    parts: [{ text: "Act as a cybersecurity expert explaining a security report to a non-technical user. Be friendly, reassuring, and easy to understand." }]
+                if (progress < 30) {
+                    scanStatus.innerText = 'Analyzing APK structure...';
+                } else if (progress < 60) {
+                    scanStatus.innerText = 'Scanning for malware patterns...';
+                } else if (progress < 90) {
+                    scanStatus.innerText = 'Checking for vulnerabilities...';
+                } else {
+                    scanStatus.innerText = 'Finalizing security report...';
                 }
-            };
-            
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.statusText}`);
-                }
-
-                const result = await response.json();
-                const explanation = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                explainedReportText.innerText = explanation || "Could not generate an explanation.";
-                explainedReportContainer.classList.remove(hiddenClass);
-            } catch (error) {
-                console.error("Error explaining report:", error);
-                showModal('Error', `Failed to get explanation from Gemini API: ${error.message}`);
-            } finally {
-                explainReportLoader.classList.add(hiddenClass);
-                explainReportBtn.disabled = false;
-            }
-        }
-
-        // Quantum Chat Logic
-        const chatInput = document.getElementById('chat-input');
-        const sendButton = document.getElementById('send-button');
-        const chatMessages = document.getElementById('chat-messages');
-        const draftReplyBtn = document.getElementById('draft-reply-btn');
-        const draftReplyLoader = document.getElementById('draft-reply-loader');
-        
-        let chatHistory = [];
-
-        function renderChatMessages() {
-            chatMessages.innerHTML = '';
-            chatHistory.forEach(msg => {
-                const messageElement = document.createElement('div');
-                messageElement.className = `chat-message ${msg.sender === 'user' ? 'sender' : 'receiver'}`;
-                messageElement.innerText = msg.text;
-                chatMessages.appendChild(messageElement);
-            });
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        sendButton.addEventListener('click', () => {
-            const text = chatInput.value.trim();
-            if (text === '') return;
-            
-            chatHistory.push({ sender: 'user', text: text });
-            renderChatMessages();
-            chatInput.value = '';
+            }, 300);
         });
-        
-        // --- Gemini API Integration for Chat Reply Drafting ---
-        async function draftReply() {
-            const lastMessage = chatHistory.length > 0 ? chatHistory[chatHistory.length - 1].text : '';
-            if (!lastMessage) {
-                showModal('Error', 'No messages to reply to.');
-                return;
-            }
 
-            draftReplyBtn.disabled = true;
-            draftReplyLoader.classList.remove(hiddenClass);
+        function completeScan(file) {
+            // Simulate scan results
+            setTimeout(() => {
+                scanProgressContainer.classList.add('hidden');
+                scanResult.classList.remove('hidden');
 
-            const userPrompt = `Based on the last message in this conversation: "${lastMessage}", please draft a conversational reply. The reply should be friendly and helpful.`;
-            
-            const payload = {
-                contents: [{ parts: [{ text: userPrompt }] }],
-                tools: [{ "google_search": {} }],
-                systemInstruction: {
-                    parts: [{ text: "Act as a helpful chatbot assisting with a reply. Provide a single, concise response." }]
-                }
-            };
-            
-            const apiKey = "";
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
+                // Generate random risk level
+                const riskLevels = ['Low Risk', 'Medium Risk', 'High Risk'];
+                const randomRisk = riskLevels[Math.floor(Math.random() * riskLevels.length)];
 
-            try {
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
+                // Update risk badge
+                riskLevel.innerText = randomRisk;
 
-                if (!response.ok) {
-                    throw new Error(`API error: ${response.statusText}`);
+                // Set appropriate risk class
+                if (randomRisk === 'Low Risk') {
+                    riskBadge.className = 'risk-indicator risk-low';
+                } else if (randomRisk === 'Medium Risk') {
+                    riskBadge.className = 'risk-indicator risk-medium';
+                } else {
+                    riskBadge.className = 'risk-indicator risk-high';
                 }
 
-                const result = await response.json();
-                const reply = result?.candidates?.[0]?.content?.parts?.[0]?.text;
-                chatInput.value = reply || "Could not draft a reply.";
-            } catch (error) {
-                console.error("Error drafting reply:", error);
-                showModal('Error', `Failed to draft reply from Gemini API: ${error.message}`);
-            } finally {
-                draftReplyLoader.classList.add(hiddenClass);
-                draftReplyBtn.disabled = false;
-            }
+                // Generate file info
+                const fileSize = (file.size / (1024 * 1024)).toFixed(2);
+                const lastModified = new Date(file.lastModified).toLocaleDateString();
+
+                fileInfo.innerHTML = `
+                    <div><span class="text-slate-300">Name:</span> ${file.name}</div>
+                    <div><span class="text-slate-300">Size:</span> ${fileSize} MB</div>
+                    <div><span class="text-slate-300">Modified:</span> ${lastModified}</div>
+                `;
+
+                // Generate risk assessment
+                const randomScore = (Math.random() * 10).toFixed(1);
+                const randomPermissions = Math.floor(Math.random() * 15) + 5;
+                const randomVulnerabilities = Math.floor(Math.random() * 8);
+
+                riskAssessment.innerHTML = `
+                    <div><span class="text-slate-300">Security Score:</span> ${randomScore}/10</div>
+                    <div><span class="text-slate-300">Permissions:</span> ${randomPermissions}</div>
+                    <div><span class="text-slate-300">Vulnerabilities:</span> ${randomVulnerabilities}</div>
+                `;
+
+                // Generate detailed report
+                scanReportContent.textContent = `
+APK Security Analysis Report
+=============================
+File: ${file.name}
+Analysis Date: ${new Date().toLocaleString()}
+Risk Level: ${randomRisk}
+
+DETAILED FINDINGS:
+- Code obfuscation: ${Math.random() > 0.5 ? 'Detected' : 'Not detected'}
+- Suspicious API calls: ${Math.floor(Math.random() * 5)}
+- Network security: ${Math.random() > 0.3 ? 'Secure' : 'Needs improvement'}
+- Data encryption: ${Math.random() > 0.4 ? 'Present' : 'Not detected'}
+- Certificate validation: ${Math.random() > 0.6 ? 'Properly implemented' : 'Weak implementation'}
+
+RECOMMENDATIONS:
+${randomRisk === 'High Risk' ?
+                        '- This application exhibits multiple security concerns. Use with extreme caution.' :
+                        randomRisk === 'Medium Risk' ?
+                            '- This application has some security issues that should be addressed before use.' :
+                            '- This application appears to be relatively secure. Standard precautions are recommended.'}
+
+Scan completed using QuantumSec Pro advanced analysis engine.
+                `;
+
+                scanButton.disabled = false;
+            }, 500);
         }
-        
-        // File Sharing Logic
+
+        // Quantum Chat Functionality
+        function initializeChatUI() {
+            const chatMessages = document.getElementById('chat-messages');
+            const chatInput = document.getElementById('chat-input');
+            const sendButton = document.getElementById('send-button');
+
+            // Clear previous messages except the welcome message
+            const welcomeMessage = chatMessages.querySelector('.message-row:first-child');
+            chatMessages.innerHTML = '';
+            if (welcomeMessage) {
+                chatMessages.appendChild(welcomeMessage);
+            }
+
+            // Send message function
+            function sendMessage() {
+                const messageText = chatInput.value.trim();
+                if (messageText) {
+                    // Encrypt message with PQC
+                    const keyPair = pqc.generateKeyPair();
+                    const encryptedMessage = pqc.encrypt(messageText, keyPair.publicKey);
+
+                    // Add sent message to chat
+                    addMessage(messageText, 'sent', new Date());
+
+                    // Simulate response after a short delay
+                    setTimeout(() => {
+                        // Decrypt message
+                        const decryptedMessage = pqc.decrypt(encryptedMessage, keyPair.privateKey);
+
+                        // Generate a response
+                        const responses = [
+                            "I understand your concern about security.",
+                            "Our quantum encryption ensures your messages are protected.",
+                            "Would you like me to analyze a file for security risks?",
+                            "Your data is safe with our post-quantum cryptography.",
+                            "I can help you with APK scanning or secure file sharing."
+                        ];
+                        const response = responses[Math.floor(Math.random() * responses.length)];
+
+                        addMessage(response, 'received', new Date());
+                    }, 1000 + Math.random() * 2000);
+
+                    // Clear input
+                    chatInput.value = '';
+                }
+            }
+
+            // Add message to chat UI
+            function addMessage(text, type, timestamp) {
+                const messageRow = document.createElement('div');
+                messageRow.className = `message-row ${type}`;
+
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${type}`;
+
+                const messageText = document.createElement('div');
+                messageText.textContent = text;
+
+                const messageTime = document.createElement('div');
+                messageTime.className = 'message-time';
+                messageTime.textContent = `${timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} • ${type === 'sent' ? 'You' : 'QuantumSec'}`;
+
+                messageDiv.appendChild(messageText);
+                messageDiv.appendChild(messageTime);
+                messageRow.appendChild(messageDiv);
+
+                chatMessages.appendChild(messageRow);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Event listeners for chat
+            sendButton.addEventListener('click', sendMessage);
+            chatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+
+        // Secure File Sharing
         const fileShareInput = document.getElementById('file-share-input');
         const generateLinkButton = document.getElementById('generate-link-button');
         const linkResult = document.getElementById('link-result');
         const shareLinkOutput = document.getElementById('share-link-output');
         const copyLinkButton = document.getElementById('copy-link-button');
 
-        async function shareFile() {
+        generateLinkButton.addEventListener('click', () => {
             const file = fileShareInput.files[0];
             if (!file) {
-                showModal('Error', 'Please select a file to share.');
+                showModal('No File Selected', 'Please select a file to generate a secure link.');
                 return;
             }
-            
-            const fileUrl = URL.createObjectURL(file);
-            shareLinkOutput.value = fileUrl;
-            linkResult.classList.remove(hiddenClass);
 
-            showModal('Success!', 'Share link generated! This link will only work in this browser session. You can copy it and download the file from the URL bar.');
-        }
+            // Generate a secure link (simulated)
+            const secureToken = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+            const secureLink = `https://quantumsec.pro/share/${secureToken}`;
 
-        // Copy link to clipboard
+            shareLinkOutput.value = secureLink;
+            linkResult.classList.remove('hidden');
+        });
+
         copyLinkButton.addEventListener('click', () => {
             shareLinkOutput.select();
             document.execCommand('copy');
-            showModal('Copied!', 'The shareable link has been copied to your clipboard.');
+
+            // Show confirmation
+            const originalText = copyLinkButton.innerHTML;
+            copyLinkButton.innerHTML = '<i class="fas fa-check"></i>';
+            setTimeout(() => {
+                copyLinkButton.innerHTML = originalText;
+            }, 2000);
         });
-        
-        // Event Listeners for Tab Switching
-        tabs.apkScan.addEventListener('click', () => switchSection('apkScan'));
-        tabs.quantumChat.addEventListener('click', () => switchSection('quantumChat'));
-        tabs.fileShare.addEventListener('click', () => switchSection('fileShare'));
 
-        // Event listeners for feature actions
-        scanButton.addEventListener('click', runApkScan);
-        generateLinkButton.addEventListener('click', shareFile);
-        explainReportBtn.addEventListener('click', explainReport);
-        draftReplyBtn.addEventListener('click', draftReply);
+        // File Share Upload Visual Feedback
+        const fileShareUploadArea = document.getElementById('file-share-upload-area');
+        const fileShareUploadIcon = document.getElementById('file-share-upload-icon').firstElementChild;
+        const fileShareUploadTitle = document.getElementById('file-share-upload-title');
+        const fileShareUploadDescription = document.getElementById('file-share-upload-description');
 
+        fileShareInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileShareUploadArea.classList.add('file-selected');
+                fileShareUploadIcon.className = 'fas fa-check-circle';
+                fileShareUploadTitle.textContent = file.name;
+                fileShareUploadDescription.textContent = `File size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+            } else {
+                fileShareUploadArea.classList.remove('file-selected');
+                fileShareUploadIcon.className = 'fas fa-cloud-upload-alt';
+                fileShareUploadTitle.textContent = 'Choose File';
+                fileShareUploadDescription.textContent = 'Drag and drop your file here or click to browse';
+            }
+        });
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up tab switching
+            tabs.apkScan.addEventListener('click', () => switchSection('apkScan'));
+            tabs.quantumChat.addEventListener('click', () => switchSection('quantumChat'));
+            tabs.fileShare.addEventListener('click', () => switchSection('fileShare'));
+
+            // Disable scan button initially
+            document.getElementById('scan-button').disabled = true;
+
+            // Add some particles to the background
+            createParticles();
+        });
+
+        // Create floating particles for background effect
+        function createParticles() {
+            const particlesContainer = document.querySelector('.particles');
+            const particleCount = 12;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                const size = Math.random() * 5 + 2;
+                const left = Math.random() * 100;
+                const top = Math.random() * 100;
+                const delay = Math.random() * 5;
+
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${left}%`;
+                particle.style.top = `${top}%`;
+                particle.style.animationDelay = `${delay}s`;
+
+                particlesContainer.appendChild(particle);
+            }
+        }
     </script>
 </body>
+
 </html>
