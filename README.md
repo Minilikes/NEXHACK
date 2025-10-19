@@ -1,4 +1,4 @@
-# ROOTBLUE 🔐
+# NEXHACK 🔐
 ### Next-Generation Quantum-Safe Cybersecurity Platform
 
 [![Security Status](https://img.shields.io/badge/Security-Quantum%20Safe-brightgreen)](https://github.com/AnushaHardaha/ROOTBLUE)
@@ -10,7 +10,7 @@
 
 ## 🎯 Overview
 
-**ROOTBLUE** is a cutting-edge cybersecurity platform engineered to provide **quantum-resistant communication, ultra-secure file sharing, and comprehensive APK threat analysis**. In an era where quantum computing threatens traditional encryption methods, ROOTBLUE stands as a fortress of digital security, ensuring your data remains protected against both current and future threats.
+**NEXHACK** is a cutting-edge cybersecurity platform engineered to provide **quantum-resistant communication, ultra-secure file sharing, and comprehensive APK threat analysis**. In an era where quantum computing threatens traditional encryption methods, ROOTBLUE stands as a fortress of digital security, ensuring your data remains protected against both current and future threats.
 
 Our platform combines **post-quantum cryptography**, **zero-trust architecture**, and **advanced threat detection** to create an ecosystem where security isn't just a feature—it's the foundation.
 
@@ -666,25 +666,6 @@ SOFTWARE.
 
 ---
 
-## 📞 Support & Contact
-
-### Community Support
-- **GitHub Issues**: [Report bugs and request features](https://github.com/AnushaHardaha/ROOTBLUE/issues)
-- **Discussions**: [Join community discussions](https://github.com/AnushaHardaha/ROOTBLUE/discussions)
-- **Wiki**: [Documentation and tutorials](https://github.com/AnushaHardaha/ROOTBLUE/wiki)
-
-### Professional Support
-- **Email**: support@rootblue.com
-- **Security Issues**: security@rootblue.com
-- **Enterprise**: enterprise@rootblue.com
-
-### Social Media
-- **Twitter**: [@RootBlue_Sec](https://twitter.com/RootBlue_Sec)
-- **LinkedIn**: [ROOTBLUE](https://linkedin.com/company/rootblue)
-- **Blog**: [blog.rootblue.com](https://blog.rootblue.com)
-
----
-
 ## 🏆 Acknowledgments
 
 Special thanks to:
@@ -697,7 +678,7 @@ Special thanks to:
 
 ## ⚡ Final Note
 
-> **ROOTBLUE – A place that's secure AF with quantum security.** 🚀
+> **NEXHACK – A place that's secure AF with quantum security.** 🚀
 
 *Building the future of cybersecurity, one quantum-safe bit at a time.*
 
