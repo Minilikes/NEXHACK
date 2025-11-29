@@ -10,7 +10,7 @@
 
 ## 🎯 Overview
 
-**NEXHACK** is a cutting-edge cybersecurity platform engineered to provide **quantum-resistant communication, ultra-secure file sharing, and comprehensive APK threat analysis**. In an era where quantum computing threatens traditional encryption methods, ROOTBLUE stands as a fortress of digital security, ensuring your data remains protected against both current and future threats.
+**NEXHACK** is a cutting-edge cybersecurity platform engineered to provide **quantum-resistant communication, ultra-secure file sharing, and comprehensive APK threat analysis**. In an era where quantum computing threatens traditional encryption methods, NEXHACK stands as a fortress of digital security, ensuring your data remains protected against both current and future threats.
 
 Our platform combines **post-quantum cryptography**, **zero-trust architecture**, and **advanced threat detection** to create an ecosystem where security isn't just a feature—it's the foundation.
 
