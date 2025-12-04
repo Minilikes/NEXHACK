@@ -1,13 +1,422 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title> NEXHACK – Hybrid Security App </title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Share+Tech+Mono&display=swap');
+
+:root{
+  --primary:#00ff7f;
+  --accent:#00fa9a;
+  --danger:#ff4d4d;
+}
+body{
+  margin:0;
+  background:#000;
+  color:#d1fae5;
+  font-family:'Inter',system-ui;
+  overflow:hidden;
+}
+.loading-screen{
+  position:fixed;inset:0;
+  background:#000;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  color:var(--primary);
+  font-family:'Share Tech Mono',monospace;
+  z-index:1000;
+}
+.terminal-text{white-space:pre-wrap;text-align:left;width:80%;max-width:700px;font-size:15px;color:#00ff7f;margin-bottom:1rem;}
+.progress-bar{height:6px;width:80%;max-width:700px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--accent));transition:width .3s;}
+.small-hint{margin-top:.5rem;font-size:.8rem;color:#6ee7b7;}
+
+canvas#matrix-bg{
+  position:fixed;inset:0;
+  background:#000;
+  z-index:-1;
+}
+
+/* Container */
+.container-card{
+  margin:2rem auto;
+  max-width:900px;
+  padding:2rem;
+  border-radius:1rem;
+  background:rgba(0,255,127,0.05);
+  border:1px solid rgba(0,255,127,0.15);
+  backdrop-filter:blur(8px);
+  box-shadow:0 20px 50px rgba(0,0,0,0.6);
+  display:none;
+}
+.app-title{
+  font-weight:800;
+  font-size:1.6rem;
+  background:linear-gradient(90deg,var(--primary),#b6ffd0);
+  -webkit-background-clip:text;
+  color:transparent;
+}
+.tab-button{padding:.4rem 1rem;border-radius:.8rem;border:none;background:transparent;color:#a7f3d0;}
+.tab-button.active{background:linear-gradient(90deg,var(--primary),var(--accent));color:#002414;}
+.file-upload-container{border:2px dashed rgba(0,255,127,.2);padding:2rem;border-radius:1rem;text-align:center;margin-top:1rem;position:relative;transition:border-color .3s;}
+.file-upload-icon i{font-size:3rem;color:var(--primary);}
+.btn-primary{background:linear-gradient(90deg,var(--primary),var(--accent));color:#002414;padding:.6rem 1.2rem;border:none;border-radius:1rem;font-weight:600;cursor:pointer;transition:transform .2s, opacity .2s;}
+.btn-primary:hover{transform:translateY(-2px);}
+.btn-primary:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.chat-container{display:flex;flex-direction:column;height:50vh;border:1px solid rgba(0,255,127,.1);border-radius:1rem;overflow:hidden;}
+.message-area{flex:1;overflow-y:auto;padding:1rem;}
+.message{margin-bottom:.5rem;padding:.6rem 1rem;border-radius:1rem;max-width:80%;word-wrap:break-word;}
+.message.sent{background:linear-gradient(90deg,var(--primary),var(--accent));color:#001b12;margin-left:auto;border-top-right-radius:0.25rem;}
+.message.received{background:rgba(255,255,255,.08);margin-right:auto;border-top-left-radius:0.25rem;}
+.message .text-xs{font-size:.75rem;opacity:0.7;margin-top:.25rem;}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.7);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:.4s;z-index:2000;}
+.modal.active{opacity:1;visibility:visible;}
+.modal-content{background:#03150d;padding:1.5rem;border-radius:1rem;color:#d1fae5;text-align:center;border:1px solid var(--primary);}
+</style>
+</head>
+<body>
+
+<canvas id="matrix-bg"></canvas>
+
+<div id="loading-screen" class="loading-screen">
+ <pre id="terminal-text" class="terminal-text"></pre>
+ <div class="progress-bar"><div id="loading-bar" class="progress-fill"></div></div>
+ <div class="small-hint">Initializing QuantumSec Pro...</div>
+</div>
+
+<div id="app" class="container-card">
+ <header class="flex justify-between items-center mb-6">
+  <h1 class="app-title"><i class="fas fa-shield-alt mr-2"></i>QuantumSec Pro</h1>
+  <div class="flex gap-2">
+   <button id="apk-scan-tab" class="tab-button active">APK Scan</button>
+   <button id="quantum-chat-tab" class="tab-button">Quantum Chat</button>
+   <button id="file-share-tab" class="tab-button">Secure Share</button>
+  </div>
+ </header>
+
+ <section id="apk-scan-section" class="section-content active">
+  <div class="file-upload-container" id="file-upload-area">
+   <div class="file-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+   <h3 id="apk-file-text">Choose APK File</h3>
+   <p>Drag & drop your APK file here or click to browse</p>
+   <input type="file" id="apk-file-input" accept=".apk" style="opacity:0;position:absolute;inset:0;cursor:pointer;">
+  </div>
+  <div class="mt-4 flex gap-3">
+   <button id="scan-button" class="btn-primary" disabled>Scan</button>
+   <button id="reset-btn" class="btn-primary" style="background:transparent;border:1px solid #475569;color:#d1fae5;">Reset</button>
+  </div>
+ </section>
+
+ <section id="quantum-chat-section" class="section-content hidden">
+  <div class="chat-container">
+   <div id="chat-messages" class="message-area">
+    <div class="message received">Welcome to QuantumSec Chat<div class="text-xs">System</div></div>
+   </div>
+   <div class="mt-auto flex gap-2 p-3">
+    <input id="chat-input" class="flex-1 rounded px-3 py-2 bg-transparent border border-green-800 focus:outline-none focus:border-primary" placeholder="Type message...">
+    <button id="send-button" class="btn-primary"><i class="fas fa-paper-plane"></i></button>
+   </div>
+  </div>
+ </section>
+
+ <section id="file-share-section" class="section-content hidden">
+  <div class="file-upload-container" id="share-file-area">
+   <div class="file-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+   <h3 id="share-file-text">Choose File</h3>
+   <p>Drag & drop or click to browse</p>
+   <input id="file-share-input" type="file" style="opacity:0;position:absolute;inset:0;cursor:pointer;">
+  </div>
+  <button id="generate-link-button" class="btn-primary mt-4"><i class="fas fa-link mr-2"></i>Generate Secure Link</button>
+ </section>
+</div>
+
+<div id="custom-modal" class="modal">
+ <div class="modal-content">
+  <h3 id="modal-title" class="text-lg font-bold mb-2"></h3>
+  <p id="modal-message"></p>
+  <button id="modal-ok-button" class="btn-primary mt-4 px-6">OK</button>
+ </div>
+</div>
+
+<script>
+/* ===== Matrix Rain ===== */
+const canvas=document.getElementById('matrix-bg');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+const letters='01';
+const fontSize=16;
+let columns=canvas.width/fontSize;
+let drops=Array(Math.floor(columns)).fill(1);
+function draw(){
+ ctx.fillStyle='rgba(0,0,0,0.08)';
+ ctx.fillRect(0,0,canvas.width,canvas.height);
+ ctx.fillStyle='#00FF7F';
+ ctx.font=fontSize+'px Share Tech Mono';
+ for(let i=0;i<drops.length;i++){
+  const text=letters[Math.floor(Math.random()*letters.length)];
+  ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+  if(drops[i]*fontSize>canvas.height&&Math.random()>0.975){drops[i]=0;}
+  drops[i]++;
+ }
+}
+setInterval(draw,35);
+window.addEventListener('resize',()=>{
+ canvas.width=window.innerWidth;
+ canvas.height=window.innerHeight;
+ columns=canvas.width/fontSize;
+ drops=Array(Math.floor(columns)).fill(1);
+});
+
+/* ===== Loading Intro ===== */
+const lines=[
+"BOOTSTRAP: Initializing Quantum Firewall...",
+"LOAD: PQC modules loaded successfully.",
+"AUTH: Decrypting secure enclave...",
+"ACCESS: Authentication granted. Welcome operator."
+];
+let idx=0;
+const terminal=document.getElementById('terminal-text');
+const bar=document.getElementById('loading-bar');
+const loading=document.getElementById('loading-screen');
+const app=document.getElementById('app');
+
+function typeLine(){
+ if(idx>=lines.length){finishIntro();return;}
+ const line=lines[idx++];
+ let pos=0;
+ const int=setInterval(()=>{
+  terminal.textContent+=line[pos++];
+  if(pos>=line.length){clearInterval(int);terminal.textContent+="\n";setTimeout(typeLine,300);}
+ },30);
+}
+
+function finishIntro(){
+ anime({targets:bar, width:['0%','100%'], duration:2500, easing:'easeInOutQuad',
+  complete:()=>{
+   gsap.to(loading,{opacity:0,duration:1,onComplete:()=>{
+    loading.remove();
+    app.style.display='block';
+    gsap.from('#app',{opacity:0,y:20,duration:1});
+   }});
+ }});
+}
+typeLine();
+
+/* ===== Basic tab logic ===== */
+function $(id){return document.getElementById(id);}
+const tabs=['apk-scan','quantum-chat','file-share'];
+tabs.forEach(name=>{
+ $(name+'-tab').onclick=()=>{
+  tabs.forEach(x=>{
+   $(x+'-tab').classList.remove('active');
+   $(x+'-section').classList.add('hidden');
+  });
+  $(name+'-tab').classList.add('active');
+  $(name+'-section').classList.remove('hidden');
+ };
+});
+
+/* ===== Simple Modal ===== */
+function showModal(t,m){$('modal-title').innerText=t;$('modal-message').innerText=m;$('custom-modal').classList.add('active');}
+$('modal-ok-button').onclick=()=>$('custom-modal').classList.remove('active');
+
+/* * ===== NEW FUNCTIONALITY =====
+* Added interactivity to the app
+*/
+
+// === APK Scan Section ===
+const apkFileInput = $('apk-file-input');
+const scanButton = $('scan-button');
+const resetButton = $('reset-btn');
+const fileUploadArea = $('file-upload-area');
+const apkFileText = $('apk-file-text');
+let selectedApkFile = null;
+
+function handleApkFile(file) {
+    if (file && file.name.endsWith('.apk')) {
+        selectedApkFile = file;
+        apkFileText.innerText = selectedApkFile.name;
+        scanButton.disabled = false;
+        fileUploadArea.style.borderColor = 'var(--primary)';
+    } else if (file) {
+        showModal('Invalid File', 'Please select a valid .apk file.');
+        resetApkScan();
+    }
+}
+
+function resetApkScan() {
+    selectedApkFile = null;
+    apkFileInput.value = ''; // Clear the file input
+    apkFileText.innerText = 'Choose APK File';
+    scanButton.disabled = true;
+    scanButton.innerText = 'Scan';
+    fileUploadArea.style.borderColor = 'rgba(0,255,127,.2)';
+}
+
+// Handle file input change
+apkFileInput.onchange = (e) => {
+    handleApkFile(e.target.files[0]);
+};
+
+// Handle Drag and Drop
+fileUploadArea.ondragover = (e) => {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = 'var(--primary)';
+};
+fileUploadArea.ondragleave = (e) => {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = 'rgba(0,255,127,.2)';
+};
+fileUploadArea.ondrop = (e) => {
+    e.preventDefault();
+    fileUploadArea.style.borderColor = 'rgba(0,255,127,.2)';
+    handleApkFile(e.dataTransfer.files[0]);
+};
+
+// Handle Scan button click
+scanButton.onclick = () => {
+    if (selectedApkFile) {
+        scanButton.innerText = 'Scanning...';
+        scanButton.disabled = true;
+        
+        // Simulate a scan
+        setTimeout(() => {
+            // Simulate a random result
+            const isSafe = Math.random() > 0.2; // 80% chance of being safe
+            if (isSafe) {
+                showModal('Scan Complete', `No threats detected in ${selectedApkFile.name}. The file is secure.`);
+            } else {
+                showModal('Threat Detected!', `Malware 'QuantumRoot.A' found in ${selectedApkFile.name}. File quarantined.`);
+            }
+            resetApkScan();
+        }, 2500);
+    }
+};
+
+// Handle Reset button click
+resetButton.onclick = resetApkScan;
+
+// === Quantum Chat Section ===
+const chatInput = $('chat-input');
+const sendButton = $('send-button');
+const chatMessages = $('chat-messages');
+
+function addChatMessage(message, sender) {
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `message ${sender}`;
+    
+    const textNode = document.createTextNode(message);
+    
+    if (sender === 'received') {
+        const senderLabel = document.createElement('div');
+        senderLabel.className = 'text-xs';
+        senderLabel.innerText = 'Quantum AI';
+        msgDiv.appendChild(textNode);
+        msgDiv.appendChild(senderLabel);
+    } else {
+         msgDiv.appendChild(textNode);
+    }
+    
+    chatMessages.appendChild(msgDiv);
+    // Scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function simulateReply() {
+    const replies = [
+        "Your query is being processed by our quantum-resistant encryption.",
+        "Analyzing... All vectors appear secure.",
+        "I am processing your request. Please stand by.",
+        "Understood. How can I further assist you with your security needs?",
+        "That's an interesting query. Let me check the secure database."
+    ];
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    
+    setTimeout(() => {
+        addChatMessage(reply, 'received');
+    }, 1200);
+}
+
+function handleSendMessage() {
+    const text = chatInput.value.trim();
+    if (text) {
+        addChatMessage(text, 'sent');
+        chatInput.value = '';
+        simulateReply();
+    }
+}
+
+sendButton.onclick = handleSendMessage;
+chatInput.onkeydown = (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault(); // Prevent form submission
+        handleSendMessage();
+    }
+};
+
+// === Secure Share Section ===
+const fileShareInput = $('file-share-input');
+const generateLinkButton = $('generate-link-button');
+const shareFileArea = $('share-file-area');
+const shareFileText = $('share-file-text');
+let selectedShareFile = null;
+
+function handleShareFile(file) {
+     if (file) {
+        selectedShareFile = file;
+        shareFileText.innerText = selectedShareFile.name;
+        shareFileArea.style.borderColor = 'var(--primary)';
+    }
+}
+
+fileShareInput.onchange = (e) => {
+    handleShareFile(e.target.files[0]);
+};
+
+// Handle Drag and Drop
+shareFileArea.ondragover = (e) => {
+    e.preventDefault();
+    shareFileArea.style.borderColor = 'var(--primary)';
+};
+shareFileArea.ondragleave = (e) => {
+    e.preventDefault();
+    shareFileArea.style.borderColor = 'rgba(0,255,127,.2)';
+};
+shareFileArea.ondrop = (e) => {
+    e.preventDefault();
+    shareFileArea.style.borderColor = 'rgba(0,255,127,.2)';
+    handleShareFile(e.dataTransfer.files[0]);
+};
+
+// Handle Generate Link button click
+generateLinkButton.onclick = () => {
+    if (selectedShareFile) {
+        // Simulate link generation
+        const fakeHash = btoa(selectedShareFile.name + Date.now()).substring(0, 20);
+        const secureLink = `qsec://share/${fakeHash}/${selectedShareFile.name}`;
+        
+        showModal('Secure Link Generated', `Your quantum-encrypted link is ready: \n${secureLink}`);
+        
+        // Reset
+        selectedShareFile = null;
+        fileShareInput.value = '';
+        shareFileText.innerText = 'Choose File';
+        shareFileArea.style.borderColor = 'rgba(0,255,127,.2)';
+        
+    } else {
+        showModal('Error', 'Please select a file to share first.');
+    }
+};
+
+</script>
+</body>
 </html>
