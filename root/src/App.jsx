@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import './App.css'
 
-// Import your security components
+// --- THESE ARE THE MISSING LINES causing your error ---
 import ApkScan from './components/ApkScan'
 import FileShare from './components/FileShare'
 import QuantumChat from './components/QuantumChat'
+// -----------------------------------------------------
 
 function App() {
   return (
