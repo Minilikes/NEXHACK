@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import './App.css'
 
-// IMPORTANT: These names must match the "export default" names
 import ApkScan from './components/ApkScan'
 import FileShare from './components/FileShare'
 import QuantumChat from './components/QuantumChat'
@@ -9,13 +8,26 @@ import QuantumChat from './components/QuantumChat'
 function App() {
   return (
     <div className="container">
-      <h1>NEXHACK Security Suite</h1>
-      <hr />
-      <ApkScan />
-      <hr />
-      <QuantumChat />
-      <hr />
-      <FileShare />
+      <div className="header">
+        <h1>NEXHACK Security Suite</h1>
+      </div>
+
+      <div className="card-container">
+        {/* Tool 1 */}
+        <div className="card">
+          <ApkScan />
+        </div>
+
+        {/* Tool 2 */}
+        <div className="card">
+          <QuantumChat />
+        </div>
+
+        {/* Tool 3 */}
+        <div className="card">
+          <FileShare />
+        </div>
+      </div>
     </div>
   )
 }
